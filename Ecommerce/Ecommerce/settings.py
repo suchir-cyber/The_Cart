@@ -144,3 +144,53 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'suchirpandula@gmail.com'
 EMAIL_HOST_PASSWORD = 'bsrl jquz bjdn esxt'
+
+LOGGING = {
+
+    'version': 1,
+
+    'disable_existing_loggers': False,
+
+    'handlers': {
+
+        'console': {
+
+            'class': 'logging.StreamHandler',
+
+        },
+
+        'file': {
+
+            'level': 'DEBUG',
+
+            'class': 'logging.FileHandler',
+
+            'filename': os.path.join(BASE_DIR, 'django_debug.log'),  # Path to your log file
+
+        },
+
+    },
+
+    'loggers': {
+
+        'django': {
+
+            'handlers': ['console'],
+
+            'level': 'INFO',
+
+        },
+
+        'your_app_name': {  # Replace with your app name
+
+            'handlers': ['console', 'file'],
+
+            'level': 'DEBUG',
+
+            'propagate': False,
+
+        },
+
+    },
+
+}

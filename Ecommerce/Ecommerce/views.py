@@ -9,9 +9,11 @@ from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
 from django.views.decorators.csrf import csrf_exempt
 import razorpay
+import logging
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
 
+logger = logging.getLogger(__name__)
 
 def BASE(request):
     return render(request,'Main/base.html')
@@ -131,6 +133,21 @@ def HandleRegister(request):
         email = request.POST.get('email')
         pass1 = request.POST.get('pass1')
         pass2 = request.POST.get('pass2')
+        
+        # Check if username already exists
+        if User.objects.filter(username=username).exists():
+            messages.warning(request, 'Registration Unsuccessful!, This username is already taken. Please choose another one.')
+            return redirect('register')  # Redirect back to the registration page
+
+        # Check if email already exists
+        if User.objects.filter(email=email).exists():
+            messages.warning(request, 'Registration Unsuccessful!, This email is already registered. Please use another one.')
+            return redirect('register')  # Redirect back to the registration page
+
+        # Check if passwords match
+        if pass1 != pass2:
+            messages.warning(request, 'Passwords do not match. Please try again.')
+            return redirect('register')  # Redirect back to the registration page
 
         customer = User.objects.create_user(username,email,pass1)
         customer.first_name = first_name
@@ -291,6 +308,7 @@ def PLACE_ORDER(request):
 @csrf_exempt
 def SUCCESS(request):
     if request.method == "POST":
+        logger.info(f"User  authenticated before payment: {request.user.is_authenticated}")
         a = request.POST
         order_id = ""
         for key,val in a.items():
@@ -300,4 +318,5 @@ def SUCCESS(request):
         user = Order.objects.filter(payment_id = order_id).first()
         # user.paid = True
         # user.save()
+        logger.info(f"User  authenticated after payment: {request.user.is_authenticated}")
     return render(request,'Cart/thank_you.html')
