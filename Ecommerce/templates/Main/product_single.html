@@ -86,8 +86,10 @@
                                 <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
                             </div>
                             <div class="pro-details-cart">
-                                <button class="add-cart"> Add To
-                                    Cart</button>
+                                <form action="{% url 'cart_add' prod.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-cart">Add To Cart</button>
+                                </form>
                             </div>
                             <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                 <a href="wishlist.html"><i class="pe-7s-like"></i></a>
