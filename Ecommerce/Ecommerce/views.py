@@ -27,12 +27,12 @@ def HOME(request):
     return render(request,'Main/index.html',context)
 
 def PRODUCT(request):
-    product = Product.objects.filter(status = 'PUBLISH')
-    categories = Categories.objects.all()
-    filter_price = Filter_Price.objects.all()
-    color = Color.objects.all()
-    brand = Brand.objects.all()
+    # Fetch all published products
+    all_products = Product.objects.filter(status='PUBLISH')
+    # Start with all products for filtering
+    product = all_products
 
+    # Get filter parameters from the request
     CATID = request.GET.get('categories')
     PRICE_FILTER_ID = request.GET.get('filter_price')
     COLOR_ID = request.GET.get('color')
@@ -44,37 +44,42 @@ def PRODUCT(request):
     NEW_PRODUCT_ID = request.GET.get('NEW_PRODUCT')
     OLD_PRODUCT_ID = request.GET.get('OLD_PRODUCT')
 
+    # Apply filters based on query parameters
     if CATID:
-        product = product.filter(Categories_id=int(CATID),status = 'PUBLISH')
+        product = product.filter(Categories_id=int(CATID))
     elif PRICE_FILTER_ID:
-        product = product.filter(filter_price=PRICE_FILTER_ID,status = 'PUBLISH')
+        product = product.filter(filter_price=PRICE_FILTER_ID)
     elif COLOR_ID:
-        product = product.filter(color=COLOR_ID,status = 'PUBLISH')  
+        product = product.filter(color=COLOR_ID)
     elif BRAND_ID:
-        product = product.filter(brand=BRAND_ID,status = 'PUBLISH') 
+        product = product.filter(brand=BRAND_ID)
     elif ATOZ_ID:
-        product = product.filter(status = 'PUBLISH').order_by('name')  
+        product = product.order_by('name')
     elif ZTOA_ID:
-        product = product.filter(status = 'PUBLISH').order_by('-name') 
+        product = product.order_by('-name')
     elif PRICE_LOWTOHIGH_ID:
-        product = product.filter(status = 'PUBLISH').order_by('price')
+        product = product.order_by('price')
     elif PRICE_HIGHTOLOW_ID:
-        product = product.filter(status = 'PUBLISH').order_by('-price')
+        product = product.order_by('-price')
     elif NEW_PRODUCT_ID:
-        product = product.filter(status = 'PUBLISH',condition='New').order_by('-id')
+        product = product.filter(condition='New').order_by('-id')
     elif OLD_PRODUCT_ID:
-        product = product.filter(status = 'PUBLISH',condition='Old').order_by('-id')        
+        product = product.filter(condition='Old').order_by('-id')
     else:
-        product = Product.objects.filter(status = 'PUBLISH').order_by('-id')
+        product = product.order_by('-id')
 
+    # Prepare context for the template
     context = {
-        'product' : product,
-        'categories' : categories,
-        'Filter_price' : filter_price,
-        'color' : color,
-        'brand' : brand
+        'product': product,
+        'categories': Categories.objects.all(),
+        'Filter_price': Filter_Price.objects.all(),
+        'color': Color.objects.all(),
+        'brand': Brand.objects.all(),
+        'product_count': product.count(),  # Number of products on the current page
+        'total_products': all_products.count(),  # Total number of published products
     }
-    return render(request,'Main/product.html',context)
+    return render(request, 'Main/product.html', context)
+
 
 
 def SEARCH(request):
