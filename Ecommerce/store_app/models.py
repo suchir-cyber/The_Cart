@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class Categories(models.Model):
@@ -107,7 +109,13 @@ class Contact_Us(models.Model):
     
 
 class Order(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=300, null=True, blank=True)
+    paid = models.BooleanField(default=False, null=True)
+    date = models.DateField(auto_now_add=True)
+    
+    # Address details can remain here or can be moved to the Profile model
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -117,14 +125,9 @@ class Order(models.Model):
     postcode = models.IntegerField()
     phone = models.IntegerField()
     email = models.EmailField(max_length=100)
-    amount = models.CharField(max_length=100)
-    payment_id = models.CharField(max_length=300,null=True,blank=True)
-    paid = models.BooleanField(default=False,null=True)
-    date = models.DateField(auto_now_add=True)
-
-
+    
     def __str__(self):
-        return self.user.username
+        return f"Order by {self.user.username} on {self.date}"
     
 
 class OrderItem(models.Model):
@@ -138,3 +141,29 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.order.user.username
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    firstname = models.CharField(max_length=100, blank=True)
+    lastname = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=15, blank=True)
+    address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    postcode = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"Profile of {self.user.username}"
+
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Create a profile if the user is created
+        Profile.objects.create(user=instance)
+    else:
+        # Optionally, update the profile when user is updated
+        if hasattr(instance, 'profile'):
+            instance.profile.save()

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from store_app.models import Product,Categories,Filter_Price,Color,Brand,Contact_Us,Order,OrderItem
+from store_app.models import Product,Categories,Filter_Price,Color,Brand,Contact_Us,Order,OrderItem,Profile
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
@@ -10,6 +10,7 @@ from cart.cart import Cart
 from django.views.decorators.csrf import csrf_exempt
 import razorpay
 import logging
+from .forms import ProfileUpdateForm
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
 
@@ -331,3 +332,29 @@ def SUCCESS(request):
         # user.save()
         logger.info(f"User  authenticated after payment: {request.user.is_authenticated}")
     return render(request,'Cart/thank_you.html')
+
+
+@login_required
+def account(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        profile = None  # Handle case where the profile doesn't exist yet
+    
+    orders = Order.objects.filter(user=request.user)
+    
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('account')  # Redirect back to account page
+    else:
+        form = ProfileUpdateForm(instance=profile)
+
+    context = {
+        'orders': orders,
+        'profile': profile,
+        'form': form
+    }
+
+    return render(request, 'Main/account.html', context)

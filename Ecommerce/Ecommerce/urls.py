@@ -32,6 +32,7 @@ urlpatterns = [
     path('register/',views.HandleRegister,name='register'),
     path('login/',views.HandleLogin,name='login'),
     path('logout/',views.HandleLogout,name='logout'),
+    path('my-account/', views.account, name='account'),
     
     #cart
     path('cart/add/<int:id>/', views.cart_add, name='cart_add'),
