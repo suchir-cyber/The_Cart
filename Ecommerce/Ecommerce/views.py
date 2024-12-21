@@ -339,7 +339,9 @@ def account(request):
     try:
         profile = request.user.profile
     except Profile.DoesNotExist:
-        profile = None  # Handle case where the profile doesn't exist yet
+        # Create a new profile if it doesn't exist
+        profile = Profile(user=request.user)
+        profile.save()  # Save the newly created profile
     
     orders = Order.objects.filter(user=request.user)
     

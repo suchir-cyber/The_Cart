@@ -1,50 +1,50 @@
-<!-- my-account.html -->
 {% extends 'Main/base.html' %}
 
 {% block content %}
-<h2>Welcome, {{ user.username }}</h2>
+<div class="container">
+    <h2>Welcome, {{ user.username }}</h2>
 
-<!-- Profile Information Section -->
-<div>
-    <h3>Your Profile</h3>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update Profile</button>
-    </form>
+    <!-- Profile Information Section -->
+    <div class="profile-section">
+        <h3>Your Profile</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- Orders History Section -->
+    <div class="orders-section">
+        <h3>Your Orders</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.product_name }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">You have no orders yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<!-- Orders History Section -->
-<div>
-    <h3>Your Orders</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Product</th>
-                <th>Date</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.product_name }}</td>
-                <td>{{ order.date }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.total_price }}</td>
-                <td>{{ order.status }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">You have no orders yet.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
 {% endblock %}
