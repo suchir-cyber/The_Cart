@@ -1,0 +1,11 @@
+.pages{
+    text-align: center;
+}
+
+.images{
+    width: 100%; /* Adjust to fit the container */
+    height: 200px; /* Fixed height to make all images uniform */
+    object-fit: cover; /* Crop the image to fill the container while maintaining aspect ratio */
+    border-radius: 8px; /* Optional: Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

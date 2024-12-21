@@ -26,13 +26,16 @@ def HOME(request):
     }
     return render(request,'Main/index.html',context)
 
-def PRODUCT(request):
-    # Fetch all published products
-    all_products = Product.objects.filter(status='PUBLISH')
-    # Start with all products for filtering
-    product = all_products
+from django.core.paginator import Paginator
 
-    # Get filter parameters from the request
+def PRODUCT(request):
+    product_list = Product.objects.filter(status='PUBLISH')
+    categories = Categories.objects.all()
+    filter_price = Filter_Price.objects.all()
+    color = Color.objects.all()
+    brand = Brand.objects.all()
+
+    # Sorting and Filtering Logic
     CATID = request.GET.get('categories')
     PRICE_FILTER_ID = request.GET.get('filter_price')
     COLOR_ID = request.GET.get('color')
@@ -44,39 +47,42 @@ def PRODUCT(request):
     NEW_PRODUCT_ID = request.GET.get('NEW_PRODUCT')
     OLD_PRODUCT_ID = request.GET.get('OLD_PRODUCT')
 
-    # Apply filters based on query parameters
     if CATID:
-        product = product.filter(Categories_id=int(CATID))
+        product_list = product_list.filter(Categories_id=int(CATID))
     elif PRICE_FILTER_ID:
-        product = product.filter(filter_price=PRICE_FILTER_ID)
+        product_list = product_list.filter(filter_price=PRICE_FILTER_ID)
     elif COLOR_ID:
-        product = product.filter(color=COLOR_ID)
+        product_list = product_list.filter(color=COLOR_ID)
     elif BRAND_ID:
-        product = product.filter(brand=BRAND_ID)
+        product_list = product_list.filter(brand=BRAND_ID)
     elif ATOZ_ID:
-        product = product.order_by('name')
+        product_list = product_list.order_by('name')
     elif ZTOA_ID:
-        product = product.order_by('-name')
+        product_list = product_list.order_by('-name')
     elif PRICE_LOWTOHIGH_ID:
-        product = product.order_by('price')
+        product_list = product_list.order_by('price')
     elif PRICE_HIGHTOLOW_ID:
-        product = product.order_by('-price')
+        product_list = product_list.order_by('-price')
     elif NEW_PRODUCT_ID:
-        product = product.filter(condition='New').order_by('-id')
+        product_list = product_list.filter(condition='New').order_by('-id')
     elif OLD_PRODUCT_ID:
-        product = product.filter(condition='Old').order_by('-id')
+        product_list = product_list.filter(condition='Old').order_by('-id')
     else:
-        product = product.order_by('-id')
+        product_list = product_list.order_by('-id')
 
-    # Prepare context for the template
+    # Pagination Logic
+    paginator = Paginator(product_list, 12)  # 12 products per page
+    page_number = request.GET.get('page')
+    product = paginator.get_page(page_number)
+
     context = {
         'product': product,
-        'categories': Categories.objects.all(),
-        'Filter_price': Filter_Price.objects.all(),
-        'color': Color.objects.all(),
-        'brand': Brand.objects.all(),
-        'product_count': product.count(),  # Number of products on the current page
-        'total_products': all_products.count(),  # Total number of published products
+        'categories': categories,
+        'Filter_price': filter_price,
+        'color': color,
+        'brand': brand,
+        'product_count': product_list.count(),
+        'total_products': Product.objects.filter(status='PUBLISH').count(),
     }
     return render(request, 'Main/product.html', context)
 

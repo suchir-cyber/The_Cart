@@ -143,13 +143,48 @@
                     <div class="pro-pagination-style text-center text-lg-end" data-aos="fade-up" data-aos-delay="200">
                         <div class="pages">
                             <ul>
-                                <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a>
-                                </li>
-                                <li class="li"><a class="page-link" href="#">1</a></li>
-                                <li class="li"><a class="page-link active" href="#">2</a></li>
-                                <li class="li"><a class="page-link" href="#">3</a></li>
-                                <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
-                                </li>
+                                <!-- Previous Page Link -->
+                                {% if product.has_previous %}
+                                    <li class="li">
+                                        <a class="page-link" href="?page={{ product.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+                                    </li>
+                                {% else %}
+                                    <li class="li disabled">
+                                        <a class="page-link"><i class="fa fa-angle-left"></i></a>
+                                    </li>
+                                {% endif %}
+                    
+                                <!-- Page Numbers -->
+                                {% for num in product.paginator.page_range %}
+                                    {% if num == product.number %}
+                                        <li class="li">
+                                            <a class="page-link active" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num >= product.number|add:'-2' and num <= product.number|add:'2' %}
+                                        <li class="li">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == product.paginator.num_pages %}
+                                        <li class="li">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == product.number|add:'-3' or num == product.number|add:'3' %}
+                                        <li class="li disabled">
+                                            <span>...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                    
+                                <!-- Next Page Link -->
+                                {% if product.has_next %}
+                                    <li class="li">
+                                        <a class="page-link" href="?page={{ product.next_page_number }}"><i class="fa fa-angle-right"></i></a>
+                                    </li>
+                                {% else %}
+                                    <li class="li disabled">
+                                        <a class="page-link"><i class="fa fa-angle-right"></i></a>
+                                    </li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
