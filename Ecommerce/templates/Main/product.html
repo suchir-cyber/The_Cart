@@ -75,11 +75,12 @@
                                                 <div class="actions">
                                                     <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart-{{ forloop.counter }}"><i
                                                         class="pe-7s-shopbag"></i></button>
-                                                    <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist"><i
-                                                            class="pe-7s-like"></i></button>
-                                                    <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="pe-7s-look"></i></button>
-                                                    <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare"><i
-                                                            class="pe-7s-refresh-2"></i></button>
+                                                        <form action="{% url 'add_to_wishlist' prod.id %}" class="action wishlist" method="post">
+                                                            {% csrf_token %}
+                                                            <button type="submit"><i class="pe-7s-like"></i></button>
+                                                        </form>    
+                                                    <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal-{{forloop.counter}}"><i class="pe-7s-look"></i></button>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -233,23 +234,7 @@
                         </div>
                     </div>
                     <!-- Sidebar single item -->
-                    <div class="sidebar-widget">
-                        <h4 class="sidebar-title">Size</h4>
-                        <div class="sidebar-widget-size">
-                            <ul>
-                                <li><a href="#" class="selected m-0"> All
-                                        <span>(6)</span> </a></li>
-                                <li><a href="#" class=""> S <span>(12)</span> </a>
-                                </li>
-                                <li><a href="#" class=""> M <span>(21)</span> </a>
-                                </li>
-                                <li><a href="#" class=""> L <span>(16)</span> </a>
-                                </li>
-                                <li><a href="#" class=""> XL <span>(22)</span> </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    
                     <!-- Sidebar single item -->
                     <div class="sidebar-widget">
                         <h4 class="sidebar-title">Brands</h4>

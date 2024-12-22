@@ -59,7 +59,7 @@
                             <span>SKU:</span>
                             <ul class="d-flex">
                                 <li>
-                                    <a href="#">Ch-256xl</a>
+                                    <a href="#">Ch-256x</a>
                                 </li>
                             </ul>
                         </div>
@@ -91,9 +91,10 @@
                                     <button type="submit" class="add-cart">Add To Cart</button>
                                 </form>
                             </div>
-                            <div class="pro-details-compare-wishlist pro-details-wishlist ">
-                                <a href="wishlist.html"><i class="pe-7s-like"></i></a>
-                            </div>
+                            <form action="{% url 'add_to_wishlist' prod.id %}" class="acart-plus-minus" method="post">
+                                {% csrf_token %}
+                                <button type="submit"><i class="pe-7s-like"></i></button>
+                            </form>
                             <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                 <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
                             </div>

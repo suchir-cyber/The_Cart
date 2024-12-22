@@ -16,8 +16,8 @@ client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SE
 
 logger = logging.getLogger(__name__)
 
-def BASE(request):
-    return render(request,'Main/base.html')
+def ABOUT(request):
+    return render(request,'Main/about.html')
 
 def HOME(request):
     product = Product.objects.filter(status = 'PUBLISH')
@@ -367,13 +367,24 @@ def add_to_wishlist(request, product_id):
     wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
     if created:
         # Optionally add a success message
-        print("Product added to wishlist")
+        messages.success(request, "Product added to wishlist.")
+    else:
+        messages.info(request, "Product is already in your wishlist.")
+    
+    # Update wishlist count in session
+    request.session['wishlist_count'] = Wishlist.objects.filter(user=request.user).count()
+
     return redirect('view_wishlist')
 
 @login_required
 def remove_from_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     Wishlist.objects.filter(user=request.user, product=product).delete()
+
+    # Update wishlist count in session
+    request.session['wishlist_count'] = Wishlist.objects.filter(user=request.user).count()
+
+    messages.success(request, "Product removed from wishlist.")
     return redirect('view_wishlist')
 
 @login_required

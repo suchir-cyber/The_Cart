@@ -141,7 +141,7 @@
                                         <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart-{{forloop.counter}}"><i
                                             class="pe-7s-shopbag"></i></button>
                                         
-                                                <form action="{% url 'add_to_wishlist' prod.id %}" method="post">
+                                                <form action="{% url 'add_to_wishlist' prod.id %}" class="action wishlist" method="post">
                                                     {% csrf_token %}
                                                     <button type="submit"><i class="pe-7s-like"></i></button>
                                                 </form>        

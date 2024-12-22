@@ -151,3 +151,19 @@ h2 {
     }
 }
 
+.icon-container {
+    width: 40px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
+    background-color: #555; /* Background color of the box */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Makes the container circular */
+    color: white; /* Color of the heart icon */
+    font-size: 20px; /* Adjust icon size */
+  }
+  
+  .icon-container i {
+    font-size: 20px; /* Adjust the size of the heart icon */
+  }
+  
