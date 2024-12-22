@@ -9,7 +9,46 @@
         <h3>Your Profile</h3>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            <!-- Non-editable fields -->
+            <div>
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}" disabled>
+            </div>
+            <div>
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}" disabled>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" disabled>
+            </div>
+
+            <!-- Editable fields -->
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" value="{{ user.profile.phone }}">
+            </div>
+            <div>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address">{{ user.profile.address }}</textarea>
+            </div>
+            <div>
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="{{ user.profile.city }}">
+            </div>
+            <div>
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" value="{{ user.profile.state }}">
+            </div>
+            <div>
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" value="{{ user.profile.country }}">
+            </div>
+            <div>
+                <label for="postcode">Postcode:</label>
+                <input type="text" id="postcode" name="postcode" value="{{ user.profile.postcode }}">
+            </div>
+
             <button type="submit">Update Profile</button>
         </form>
     </div>

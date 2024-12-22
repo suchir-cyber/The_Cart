@@ -34,6 +34,7 @@
             <table>
               <thead>
                 <tr>
+                  <th>S.no</th>
                   <th>Image</th>
                   <th>Product Name</th>
                   <th>Until Price</th>
@@ -45,6 +46,7 @@
               <tbody>
                 {% for key,value in request.session.cart.items %}
                 <tr>
+                  <td data-label="S.No">{{ forloop.counter }}</td>
                   <td class="product-thumbnail">
                     <a href="#"
                       ><img
