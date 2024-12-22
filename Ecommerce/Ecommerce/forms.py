@@ -9,23 +9,24 @@ class ProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['firstname', 'lastname', 'phone', 'address', 'city', 'state', 'country', 'postcode', 'email']
+        fields = ['firstname', 'lastname', 'phone', 'address', 'city', 'state', 'country', 'postcode']
 
     def __init__(self, *args, **kwargs):
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['username'].initial = self.instance.user.username  # Set the initial value to the current username
-        self.fields['email'].initial = self.instance.user.email  # Set the initial value to the current email
+        self.fields['username'].initial = self.instance.user.username  # Set initial value to current username
+        self.fields['email'].initial = self.instance.user.email  # Set initial value to current email
 
     def save(self, commit=True):
-        profile = super().save(commit=False)  # Save the profile model instance
+        # Save the profile instance first
+        profile = super().save(commit=False)
+        
+        # Also update the user-related fields
         user = self.instance.user  # Get the associated user
-
-        # Update the user model fields
         user.username = self.cleaned_data['username']
         user.email = self.cleaned_data['email']
         
         if commit:
             user.save()  # Save the user instance
             profile.save()  # Save the profile instance
-
+        
         return profile

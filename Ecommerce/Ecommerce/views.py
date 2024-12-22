@@ -348,8 +348,10 @@ def account(request):
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=profile)
         if form.is_valid():
-            form.save()
+            form.save()  # Saves both profile and user (username and email)
             return redirect('account')  # Redirect back to account page
+        else:
+            print(form.errors)  # Check for any errors
     else:
         form = ProfileUpdateForm(instance=profile)
 
@@ -360,6 +362,8 @@ def account(request):
     }
 
     return render(request, 'Main/account.html', context)
+
+
 
 @login_required
 def add_to_wishlist(request, product_id):
