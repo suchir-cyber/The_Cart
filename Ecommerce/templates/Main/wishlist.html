@@ -1,0 +1,169 @@
+{% extends "Main/base.html" %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .wishlist-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist-header h2 {
+        font-size: 1.8rem;
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    thead tr {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .item-image {
+        max-width: 80px;
+        border-radius: 5px;
+    }
+
+    .actions a, .actions form button {
+        text-decoration: none;
+        padding: 0.5rem 0.8rem;
+        margin-right: 0.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #fff;
+        display: inline-block;
+    }
+
+    .actions a {
+        background-color: #ff6b6b;
+        transition: background-color 0.3s;
+    }
+
+    .actions a:hover {
+        background-color: #e63946;
+    }
+
+    .actions form button {
+        background-color: #28a745;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .actions form button:hover {
+        background-color: #218838;
+    }
+
+    .empty-message {
+        text-align: center;
+        color: #666;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        thead tr {
+            display: none;
+        }
+
+        tbody tr {
+            margin-bottom: 1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        td {
+            padding: 0.8rem;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #555;
+        }
+    }
+</style>
+
+<div class="wishlist-container">
+    <div class="wishlist-header">
+        <h2>My Wishlist</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in wishlist_items %}
+            <tr>
+                <td data-label="Image">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-image">
+                </td>
+                <td data-label="Product">{{ item.product.name }}</td>
+                <td data-label="Price">₹{{ item.product.price }}</td>
+                <td data-label="Actions" class="actions">
+                    <a href="{% url 'remove_from_wishlist' item.product.id %}">Remove</a>
+                    <form action="{% url 'cart_add' item.product.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-message">Your wishlist is empty!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

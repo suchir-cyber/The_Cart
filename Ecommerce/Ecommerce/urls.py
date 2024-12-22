@@ -33,6 +33,11 @@ urlpatterns = [
     path('login/',views.HandleLogin,name='login'),
     path('logout/',views.HandleLogout,name='logout'),
     path('my-account/', views.account, name='account'),
+
+    #wishlist
+    path('wishlist/', views.view_wishlist, name='view_wishlist'),
+    path('wishlist/add/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/remove/<int:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
     
     #cart
     path('cart/add/<int:id>/', views.cart_add, name='cart_add'),

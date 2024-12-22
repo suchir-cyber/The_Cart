@@ -1,5 +1,5 @@
-from django.shortcuts import render,redirect
-from store_app.models import Product,Categories,Filter_Price,Color,Brand,Contact_Us,Order,OrderItem,Profile
+from django.shortcuts import render,redirect,get_object_or_404
+from store_app.models import Product,Categories,Filter_Price,Color,Brand,Contact_Us,Order,OrderItem,Profile,Wishlist
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
@@ -360,3 +360,23 @@ def account(request):
     }
 
     return render(request, 'Main/account.html', context)
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+    if created:
+        # Optionally add a success message
+        print("Product added to wishlist")
+    return redirect('view_wishlist')
+
+@login_required
+def remove_from_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    Wishlist.objects.filter(user=request.user, product=product).delete()
+    return redirect('view_wishlist')
+
+@login_required
+def view_wishlist(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
+    return render(request, 'Main/wishlist.html', {'wishlist_items': wishlist_items})
